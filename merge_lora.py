@@ -75,7 +75,6 @@ def main():
 
     wan_t2v = wan.WanT2V(
         config=config,
-        checkpoint_dir=args.dit,
         device=device,
         dtype=dit_weight_dtype,
         dit_path=args.dit,
