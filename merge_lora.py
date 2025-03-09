@@ -18,7 +18,13 @@ def parse_args():
     parser = argparse.ArgumentParser(description="HunyuanVideo model merger script")
 
     parser.add_argument(
-        "--dit", type=str, required=True, help="DiT checkpoint path or directory"
+        "--ckpt_dir",
+        type=str,
+        default=None,
+        help="The path to the checkpoint directory (Wan 2.1 official).",
+    )
+    parser.add_argument(
+        "--dit", type=str, required=False, help="DiT checkpoint path or directory"
     )
     parser.add_argument(
         "--dit_in_channels",
@@ -75,7 +81,7 @@ def main():
 
     wan_t2v = wan.WanT2V(
         config=config,
-        checkpoint_dir=None,
+        checkpoint_dir=args.ckpt_dir,
         device=device,
         dtype=dit_weight_dtype,
         dit_path=args.dit,
