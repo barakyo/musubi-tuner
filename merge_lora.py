@@ -68,7 +68,7 @@ def main():
     config = WAN_CONFIGS["t2v-14B"]
 
     dit_weight_dtype = torch.bfloat16
-    dit_attn_mode = "torch" if args.attn_mode is None else args.attn_mode
+    dit_attn_mode = "torch"
 
     wan_t2v = wan.WanT2V(
         config=config,
