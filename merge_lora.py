@@ -65,15 +65,6 @@ def main():
 
     # Load DiT model
     logger.info(f"Loading DiT model from {args.dit}")
-    transformer = load_transformer(
-        args.dit,
-        "torch",
-        False,
-        "cpu",
-        torch.bfloat16,
-        in_channels=args.dit_in_channels,
-    )
-
     config = WAN_CONFIGS["t2v-14B"]
 
     dit_dtype = torch.bfloat16
