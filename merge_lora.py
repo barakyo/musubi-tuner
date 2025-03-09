@@ -5,6 +5,10 @@ from safetensors.torch import load_file
 from networks import lora_wan
 from utils.safetensors_utils import mem_eff_save_file
 from hunyuan_model.models import load_transformer
+import wan
+from wan.modules.vae import WanVAE
+from wan.configs import WAN_CONFIGS, SUPPORTED_SIZES
+from wan.modules.model import WanModel
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -69,6 +73,39 @@ def main():
         torch.bfloat16,
         in_channels=args.dit_in_channels,
     )
+
+    config = WAN_CONFIGS["t2v-14B"]
+
+    dit_dtype = torch.bfloat16
+    dit_weight_dtype = torch.float8_e4m3fn if args.fp8 else dit_dtype
+    dit_attn_mode = "torch" if args.attn_mode is None else args.attn_mode
+
+    wan_t2v = wan.WanT2V(
+        config=config,
+        checkpoint_dir=args.dit,
+        device=device,
+        dtype=dit_weight_dtype,
+        dit_path=args.dit,
+        dit_attn_mode=dit_attn_mode,
+        t5_path=args.t5,
+        t5_fp8=args.fp8_t5,
+    )
+
+    transformer = WanModel(
+        dim=config.dim,
+        eps=config.eps,
+        ffn_dim=config.ffn_dim,
+        freq_dim=config.freq_dim,
+        in_dim=16,
+        num_heads=config.num_heads,
+        num_layers=config.num_layers,
+        out_dim=16,
+        text_len=512,
+        attn_mode=dit_attn_mode,
+    )
+
+    transformer.to(config.param_dtype)
+
     transformer.eval()
 
     # Load LoRA weights and merge
