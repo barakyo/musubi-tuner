@@ -53,6 +53,9 @@ def parse_args():
         default="cuda" if torch.cuda.is_available() else "cpu",
         help="Device to use for merging",
     )
+    parser.add_argument(
+        "--t5", type=str, default=None, help="text encoder (T5) checkpoint path"
+    )
 
     return parser.parse_args()
 
@@ -78,7 +81,7 @@ def main():
         dit_path=args.dit,
         dit_attn_mode=dit_attn_mode,
         t5_path=args.t5,
-        t5_fp8=args.fp8_t5,
+        t5_fp8=False,
     )
 
     transformer = WanModel(
