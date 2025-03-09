@@ -67,8 +67,7 @@ def main():
     logger.info(f"Loading DiT model from {args.dit}")
     config = WAN_CONFIGS["t2v-14B"]
 
-    dit_dtype = torch.bfloat16
-    dit_weight_dtype = torch.float8_e4m3fn if args.fp8 else dit_dtype
+    dit_weight_dtype = torch.bfloat16
     dit_attn_mode = "torch" if args.attn_mode is None else args.attn_mode
 
     wan_t2v = wan.WanT2V(
